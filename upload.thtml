@@ -1,0 +1,12 @@
+<html>
+<head>
+    <title>Upload a file</title>
+</head>
+<body>
+    <h1>Upload a file to {{ path }}</h1>
+    <form enctype="multipart/form-data" action="{{ '/upload/' + path }}" method="post">
+        {% module xsrf_form_html() %}
+        File: <input type="file" name="uploadedFile" />
+        <input type="submit" value="Upload" />
+    </form>
+</body>

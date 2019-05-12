@@ -1,0 +1,16 @@
+<html>
+<head>
+    <title>Authentication</title>
+</head>
+<body>
+    {% if incorrect %}
+        <h2>Incorrect username or password!</h2>
+    {% end %}
+    <form action="/login" method="post">
+        {% module xsrf_form_html() %}
+        <div>Username <input type="text" name="username"/></div>
+        <div>Password <input type="password" name="password"/></div>
+        <input type="submit" value="Sign In" /></div>
+    </form>
+</body>
+</html>

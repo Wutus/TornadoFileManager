@@ -1,0 +1,5 @@
+{
+    "cookie_secret": "C00K13_53C83T",
+    "login_url": "/login",
+    "xsrf_cookies": true
+}
