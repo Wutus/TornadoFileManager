@@ -9,7 +9,7 @@ import tornado.web
 import json
 import shutil
 
-base_path = 'X:/'
+base_path = '/home/samba/wieclawk/linux/TornadoFileManager/fun'
 
 class User:
     def __init__(self, name, password):
@@ -34,8 +34,8 @@ class BrowseHandler(tornado.web.RequestHandler):
     def get(self, path):
         path = os.path.normpath(path)
         path = path.replace('\\','/')
-        path_to_list = os.path.normpath(os.path.join(base_path + path)).replace('\\','/')
-        if not path_to_list.startswith(os.path.join(base_path, '')):
+        path_to_list = os.path.normpath(os.path.join(base_path, path)).replace('\\','/')
+        if not path_to_list.startswith(base_path):
             raise tornado.web.HTTPError(403)
         if not os.path.isdir(path_to_list):
             raise tornado.web.HTTPError(404)
@@ -45,6 +45,8 @@ class BrowseHandler(tornado.web.RequestHandler):
             lstat_result = os.lstat(absf)
             data = time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(lstat_result.st_mtime))
             files.append(Fileinfo(os.path.join(path,f), data, lstat_result.st_size))
+        if not path.endswith('/'):
+            path = path + '/'
         self.render('browse.thtml', files=files, path=path)
 
 def load_users():
@@ -93,6 +95,8 @@ class UploadHandler(tornado.web.RequestHandler):
     @tornado.web.authenticated
     def get(self, path):
         path = os.path.normpath(path)
+        if not path.endswith('/'):
+            path = path + '/'
         self.render("upload.thtml", path=path)
 
     @tornado.web.authenticated
@@ -116,7 +120,10 @@ class RemoveHandler(tornado.web.RequestHandler):
     def get(self, path):
         real_path = os.path.normpath(os.path.join(base_path,path))
         if os.path.exists(real_path):
-            shutil.rmtree(real_path)
+            if os.path.isdir(real_path):
+                shutil.rmtree(real_path)
+            else:
+                os.remove(real_path)
         self.redirect('/browse/')
 
 
@@ -165,6 +172,7 @@ def main():
     if(len(sys.argv) > 2):
         print("Usage: tornadoserver.py [base_path]")
         exit(1)
+    base_path = os.path.abspath(base_path)
     if not os.path.exists(base_path):
         print("Base path %s does not exists" % base_path)
         exit(1)

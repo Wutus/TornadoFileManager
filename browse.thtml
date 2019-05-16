@@ -4,13 +4,13 @@
 </head>
 <body>
     {% if current_user %}
-        <div><a href="{{ "/upload" + path }}">Upload file here</a></div>
+        <div><a href="{{ "/upload/" + path}}">Upload file here</a></div>
         <div><a href="/logout">Log out</a></div>
     {% end %}
     {% if not current_user %}
         <div><a href="/login">Sign in to upload files</a></div>
     {% end %}
-    <div>Browsing {{ '/' + ((path + '/') if not path == '.' else '')  }}</div>
+    <div>Browsing {{ '/' + path }}</div>
         <div>
             <table>
             <thead>
